@@ -121,7 +121,7 @@ public final class SaleState {
         updatedTicket.setCustomerId(customer != null ? customer.getCustomerId() : 0);
         updatedTicket.setUpdateCustomer(customer != null);
         updatedTicket.setCustomer(customer);
-        updatedTicket.setTaxExempted(customer != null && customer.isTaxExempt());
+        updatedTicket.setTaxExempted(customer != null && customer.IsTaxExempt());
         
         return new SaleState(items, associateTips, customer, updatedTicket, total,
                 balanceDue, totalTips, tenders, status);

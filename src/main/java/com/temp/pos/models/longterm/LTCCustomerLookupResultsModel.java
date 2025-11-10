@@ -1,14 +1,21 @@
 package com.temp.pos.models.longterm;
 
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.temp.pos.models.common.MobileBase;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LTCCustomerLookupResultsModel {
+
+    @JsonProperty("results")
     private MobileBase results;
+
+    @JsonProperty("customers")
     private List<LTCCustomer> customers;
 
-    // Getters and Setters
+    // === GETTERS & SETTERS ===
     public MobileBase getResults() {
         return results;
     }

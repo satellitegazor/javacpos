@@ -9,6 +9,8 @@ import com.temp.pos.models.common.DailyExchRateMdl;
 import com.temp.pos.models.longterm.LTCAbbrLocationModel;
 import com.temp.pos.models.longterm.LTCVendorLocationsResultModel;
 import com.temp.pos.models.longterm.LocationConfigModel;
+import com.temp.pos.models.longterm.SaleController;
+import com.temp.pos.models.longterm.SaleState;
 import com.temp.pos.models.longterm.VLogonModel;
 import com.temp.pos.models.longterm.VendorLoginResultsModel;
 import com.temp.pos.services.CommonClient;
@@ -334,7 +336,35 @@ public class LTLogonFrame extends JFrame implements BaseLogonFrame {
 
     @Override
     public JFrame getSaleTranFrame() {
-        return new LTSaleTranFrame(userId);
+        SaleView view = new SaleView() {
+            @Override
+            public void updateBilling(SaleState state) {
+                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+
+            @Override
+            public void updateItems(java.util.List<?> items) {
+                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+
+            @Override
+            public void showMessage(String message) {
+                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+
+            @Override
+            public void clearAll() {
+                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+
+            @Override
+            public void setStatus(String status) {
+                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+        };
+        SaleController controller = new SaleController(view);
+        CommonClient comClient = new CommonClient();
+        return new LTSaleTranFrame(userId, controller);
     }
     
     private void saveCredentials(String vendorNumber, String ExchNum, String LocationName) {

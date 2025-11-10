@@ -3,91 +3,143 @@ package com.temp.pos.models.longterm;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class LTCCustomer {
-    private int customerId;
-    private String customerName;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phone;
-    private String address1;
-    private String address2;
-    private String city;
-    private String state;
-    private String zipCode;
-    private String country;
-    private boolean taxExempt;
-    private BigDecimal creditLimit;
-    private BigDecimal currentBalance;
-    private LocalDateTime lastPurchaseDate;
-    private int loyaltyPoints;
-    private String customerType;
-    private boolean active;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    // Constructor
+/**
+ * Minimal LTCCustomer – only the fields you listed.
+ */
+public class LTCCustomer {
+
+    // === FIELDS (exactly as you wrote them) ===
+    @JsonProperty("customerUID")
+    private int    customerUID;
+    @JsonProperty("cTitle")
+    private String cTitle;
+    @JsonProperty("cFirstName")
+    private String cFirstName;
+    @JsonProperty("cLastName")
+    private String cLastName;
+    @JsonProperty("cAddress1")
+    private String cAddress1;
+    @JsonProperty("cAddress2")
+    private String cAddress2;
+    @JsonProperty("cCity")
+    private String cCity;
+    @JsonProperty("cStateProvice")
+    private String cStateProvince;
+    @JsonProperty("cPostalCode")
+    private String cPostalCode;
+    @JsonProperty("cEmailAddress")
+    private String cEmailAddress;
+    @JsonProperty("cPhoneNumber")
+    private String cPhoneNumber;
+    @JsonProperty("cDialCode")
+    private String cDialCode = "";
+    @JsonProperty("cNotes")
+    private String cNotes = "";
+    @JsonProperty("cUnit")
+    private String cUnit = "";
+    @JsonProperty("cmi")
+    private String cmi = "";   // <-- fixed missing semicolon
+    private boolean isTaxExempt = false;
+
+    // === CONSTRUCTORS ===
     public LTCCustomer() {}
 
-    public LTCCustomer(int customerId, String customerName, boolean taxExempt) {
-        this.customerId = customerId;
-        this.customerName = customerName;
-        this.taxExempt = taxExempt;
+    public LTCCustomer(int customerUID, String firstName, 
+            String lastName, String phoneNum) {
+        this.customerUID   = customerUID;
+        this.cFirstName    = firstName;
+        this.cLastName     = lastName;
+        this.cPhoneNumber  = phoneNum;
     }
 
-    // Getters & Setters
-    public int getCustomerId() { return customerId; }
-    public void setCustomerId(int customerId) { this.customerId = customerId; }
+    // === GETTERS (the ones you already had) ===
+    public int    getCustomerId()   { return customerUID; }
+    public String getCustomerName() { return (cFirstName != null ? cFirstName : "") + " " + (cLastName != null ? cLastName : ""); }
+    public String getFirstName()    { return cFirstName; }
+    public String getLastName()     { return cLastName; }
+    public String getEmail()        { return cEmailAddress; }
+    public String getPhone()        { return cPhoneNumber; }
+    public String getAddress1()     { return cAddress1; }
+    public String getAddress2()     { return cAddress2; }
+    public String getCity()         { return cCity; }
+    public String getState()        { return cStateProvince; }
+    public String getZipCode()      { return cPostalCode; }
+    public boolean IsTaxExempt() { return isTaxExempt;}
 
-    public String getCustomerName() { return customerName; }
-    public void setCustomerName(String customerName) { this.customerName = customerName; }
+    // === SETTERS – ONE FOR EVERY FIELD ===
+    public void setCustomerId(int customerUID) {
+        this.customerUID = customerUID;
+    }
 
-    public String getFirstName() { return firstName; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public void setTitle(String cTitle) {
+        this.cTitle = cTitle;
+    }
 
-    public String getLastName() { return lastName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
+    public void setFirstName(String cFirstName) {
+        this.cFirstName = cFirstName;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public void setLastName(String cLastName) {
+        this.cLastName = cLastName;
+    }
 
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
+    public void setEmail(String cEmailAddress) {
+        this.cEmailAddress = cEmailAddress;
+    }
 
-    public String getAddress1() { return address1; }
-    public void setAddress1(String address1) { this.address1 = address1; }
+    public void setPhone(String cPhoneNumber) {
+        this.cPhoneNumber = cPhoneNumber;
+    }
 
-    public String getAddress2() { return address2; }
-    public void setAddress2(String address2) { this.address2 = address2; }
+    public void setAddress1(String cAddress1) {
+        this.cAddress1 = cAddress1;
+    }
 
-    public String getCity() { return city; }
-    public void setCity(String city) { this.city = city; }
+    public void setAddress2(String cAddress2) {
+        this.cAddress2 = cAddress2;
+    }
 
-    public String getState() { return state; }
-    public void setState(String state) { this.state = state; }
+    public void setCity(String cCity) {
+        this.cCity = cCity;
+    }
 
-    public String getZipCode() { return zipCode; }
-    public void setZipCode(String zipCode) { this.zipCode = zipCode; }
+    public void setState(String cStateProvince) {
+        this.cStateProvince = cStateProvince;
+    }
 
-    public String getCountry() { return country; }
-    public void setCountry(String country) { this.country = country; }
+    public void setZipCode(String cPostalCode) {
+        this.cPostalCode = cPostalCode;
+    }
 
-    public boolean isTaxExempt() { return taxExempt; }
-    public void setTaxExempt(boolean taxExempt) { this.taxExempt = taxExempt; }
+    public void setDialCode(String cDialCode) {
+        this.cDialCode = cDialCode;
+    }
 
-    public BigDecimal getCreditLimit() { return creditLimit; }
-    public void setCreditLimit(BigDecimal creditLimit) { this.creditLimit = creditLimit; }
+    public void setNotes(String cNotes) {
+        this.cNotes = cNotes;
+    }
 
-    public BigDecimal getCurrentBalance() { return currentBalance; }
-    public void setCurrentBalance(BigDecimal currentBalance) { this.currentBalance = currentBalance; }
+    public void setUnit(String cUnit) {
+        this.cUnit = cUnit;
+    }
 
-    public LocalDateTime getLastPurchaseDate() { return lastPurchaseDate; }
-    public void setLastPurchaseDate(LocalDateTime lastPurchaseDate) { this.lastPurchaseDate = lastPurchaseDate; }
+    public void setCmi(String cmi) {
+        this.cmi = cmi;
+    }
+    
+    public void setTaxExempt(boolean isExempt) {
+        this.isTaxExempt = isExempt;
+    }
 
-    public int getLoyaltyPoints() { return loyaltyPoints; }
-    public void setLoyaltyPoints(int loyaltyPoints) { this.loyaltyPoints = loyaltyPoints; }
-
-    public String getCustomerType() { return customerType; }
-    public void setCustomerType(String customerType) { this.customerType = customerType; }
-
-    public boolean isActive() { return active; }
-    public void setActive(boolean active) { this.active = active; }
+    // === OPTIONAL: toString for debugging ===
+    @Override
+    public String toString() {
+        return "LTCCustomer{" +
+                "id=" + customerUID +
+                ", name='" + getCustomerName() + '\'' +
+                ", phone='" + cPhoneNumber + '\'' +
+                '}';
+    }
 }

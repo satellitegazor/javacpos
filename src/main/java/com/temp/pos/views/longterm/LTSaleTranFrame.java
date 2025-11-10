@@ -1,13 +1,18 @@
 package com.temp.pos.views.longterm;
 
+import com.temp.pos.models.longterm.LTCCustomer;
 import com.temp.pos.models.longterm.LTCItemButtonMenuResult;
 import com.temp.pos.models.longterm.LTCItemButtonMenuResultsModel;
 import com.temp.pos.models.longterm.LocationConfig;
 import com.temp.pos.models.longterm.LocationConfigModel;
 import com.temp.pos.models.longterm.LocationIndividual;
+import com.temp.pos.services.CommonClient;
 import com.temp.pos.services.LTCClient;
 import com.temp.pos.utils.LongTerm.VendorDataCache;
 import com.temp.pos.utils.TimeZoneUtils;
+import com.temp.pos.views.CustomerSearchDialog;
+import com.temp.pos.models.longterm.SaleController;
+
 import javax.swing.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +58,10 @@ public class LTSaleTranFrame extends JFrame {
     private static final Color ACCENT_DANGER = new Color(239, 68, 68);     // rose-500
     private static final Color BORDER_SUBTLE = new Color(226, 232, 240);   // slate-200
     private static final Color BORDER_HAIRLINE = new Color(241, 245, 249); // slate-100
-
+    
+    private final SaleController controller;
+    private final CommonClient commonClient;
+    
     // FIXED HEIGHT BUTTON
     private static class FixedHeightButton extends JButton {
 
@@ -79,8 +87,12 @@ public class LTSaleTranFrame extends JFrame {
         }
     }
 
-    public LTSaleTranFrame(String userId) {
+    public LTSaleTranFrame(String userId, SaleController controller) {
+        
+        this.controller = controller;
+        this.commonClient = new CommonClient();        
         UserId = userId;
+        
         setTitle("Concession POS - LT Sale Transaction");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new BorderLayout());
@@ -573,8 +585,20 @@ public class LTSaleTranFrame extends JFrame {
         checkoutBtn.setFont(footerFont);
         ticketLookupBtn.setFont(footerFont);
         cancelBtn.setFont(footerFont);
+        
+        
 
-        customerBtn.addActionListener(e -> logger.info("Customer button clicked"));
+        customerBtn.addActionListener(e -> {
+            LTCCustomer customer = CustomerSearchDialog.showDialog(
+                LTSaleTranFrame.this, commonClient, controller
+            );
+            if (customer != null) {
+                controller.assignCustomer(customer);
+                JOptionPane.showMessageDialog(this, 
+                    "Customer selected: " + customer.getCustomerName());
+            }
+        });
+
         checkoutBtn.addActionListener(e -> {
             double total = itemQuantities.entrySet().stream()
                     .filter(entry -> entry.getValue() > 0)

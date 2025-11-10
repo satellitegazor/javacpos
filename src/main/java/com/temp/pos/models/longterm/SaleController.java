@@ -86,7 +86,7 @@ public class SaleController {
 
         if (customer != null) {
             view.showMessage("Customer: " + customer.getCustomerName() +
-                    (customer.isTaxExempt() ? " (Tax Exempt)" : ""));
+                    (customer.IsTaxExempt() ? " (Tax Exempt)" : ""));
             logger.info("Customer assigned: {} (ID: {})", customer.getCustomerName(), customer.getCustomerId());
         } else {
             view.showMessage("Guest Checkout");
@@ -127,7 +127,7 @@ public class SaleController {
         ticket.setTotalSale(finalTotal);
         ticket.setBalanceDue(0.0);
         ticket.setTransactionDate(LocalDateTime.now());
-        ticket.setTaxExempted(state.hasCustomer() && state.getCustomer().isTaxExempt());
+        ticket.setTaxExempted(state.hasCustomer() && state.getCustomer().IsTaxExempt());
 
         // CALL API
         try {
@@ -179,7 +179,7 @@ public class SaleController {
             ticket.setCustomerId(customer.getCustomerId());
             ticket.setCustomer(customer);
             ticket.setUpdateCustomer(true);
-            ticket.setTaxExempted(customer.isTaxExempt());
+            ticket.setTaxExempted(customer.IsTaxExempt());
         } else {
             ticket.setCustomerId(0);
             ticket.setCustomer(null);
