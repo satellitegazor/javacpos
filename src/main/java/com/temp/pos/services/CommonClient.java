@@ -1,13 +1,13 @@
 package com.temp.pos.services;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.temp.pos.models.longterm.*;
+import com.temp.pos.longterm.models.*;
 import com.temp.pos.utils.WebApiConstants;
-import com.temp.pos.views.CustomerSearchDialog;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,10 +25,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.List;
 
 public class CommonClient {
     

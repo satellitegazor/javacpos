@@ -2,7 +2,7 @@ package com.temp.pos.models.shortterm;
 
 import java.sql.Date;
 
-import com.temp.pos.models.longterm.Vendor;
+import com.temp.pos.longterm.models.Vendor;
 import com.temp.pos.models.common.CPOSRegionCountryCurrencyResultsModel;
 
 public class ROVContract {

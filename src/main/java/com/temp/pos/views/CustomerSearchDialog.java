@@ -1,7 +1,7 @@
 package com.temp.pos.views;
 
-import com.temp.pos.models.longterm.LTCCustomer;
-import com.temp.pos.models.longterm.SaleController;
+import com.temp.pos.longterm.models.LTCCustomer;
+import com.temp.pos.longterm.controllers.SaleController;
 import com.temp.pos.services.CommonClient; // <-- NEW
 
 import javax.swing.*;
