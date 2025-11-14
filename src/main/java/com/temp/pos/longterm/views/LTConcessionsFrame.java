@@ -45,7 +45,7 @@ public class LTConcessionsFrame extends JFrame {
         mainPanel.revalidate();
         mainPanel.repaint();
 
-        logonPanel.requestFocusInWindow();
+        //logonPanel.requestFocusInWindow();
     }
 
     public void showSale(String UserId) {

@@ -315,7 +315,7 @@ public class LTLogonFrame extends JFrame implements BaseLogonFrame {
                         //JFrame saleTranFrame = getSaleTranFrame();
                         //saleTranFrame.setVisible(true);
 
-                        dispose();
+                        //dispose();
                     });
                 } else {
                     statusLabel.setForeground(Color.RED);
@@ -325,9 +325,9 @@ public class LTLogonFrame extends JFrame implements BaseLogonFrame {
         });
         
         loadCredentials();
-        SwingUtilities.invokeLater(() -> {
-            pinField.requestFocusInWindow();
-        });
+//        SwingUtilities.invokeLater(() -> {
+//            pinField.requestFocusInWindow();
+//        });
         
     }
 

@@ -137,7 +137,7 @@ public class LTCheckout extends JFrame {
                 "Payment of €" + String.format("%.2f", total) + " processed with " + tenderType,
                 "Payment Complete", JOptionPane.INFORMATION_MESSAGE);
 
-        dispose();
+        //dispose();
     }
 
     private void updateTotal() {

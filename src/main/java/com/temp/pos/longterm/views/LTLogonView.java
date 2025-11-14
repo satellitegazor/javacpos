@@ -176,9 +176,9 @@ public class LTLogonView extends JPanel {
         pinField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                if (pinField.getPassword().length == 4) {
-                    performLogin();
-                }
+//                if (pinField.getPassword().length == 4) {
+//                    performLogin();
+//                }
             }
 
             @Override
@@ -344,9 +344,7 @@ public class LTLogonView extends JPanel {
                     statusLabel.setForeground(Color.GREEN);
                     statusLabel.setText("Success! Your message has been sent successfully.");
                     SwingUtilities.invokeLater(() -> {
-//                        JFrame saleTranFrame = getSaleTranFrame();
-//                        saleTranFrame.setVisible(true);
-//                        dispose();
+                        System.out.println("calling Frame onLoginSuccess");
                         parent.onLoginSuccess(userId);
                     });
                 } else {
