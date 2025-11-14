@@ -534,7 +534,7 @@ public class LTCClient {
     }
 
     public LTCVendorLocationsResultModel getVendorLocations(String vid, String uid, int cliTimeVar) {
-        String url = baseUrl + "ltc/GetVendorLocations";
+        String url = baseUrl + "common/GetVendorLocations";
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url)
                 .queryParam("guid", WebApiConstants.getGuid)
                 .queryParam("vid", vid)

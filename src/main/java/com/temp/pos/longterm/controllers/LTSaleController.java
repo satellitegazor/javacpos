@@ -21,6 +21,7 @@ package com.temp.pos.longterm.controllers;
 
 
 import com.temp.pos.longterm.models.*;
+import com.temp.pos.longterm.views.LTSaleTranView;
 import com.temp.pos.longterm.views.SaleView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,14 +29,25 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
-public class SaleController {
-    private static final Logger logger = LoggerFactory.getLogger(SaleController.class);
+public class LTSaleController {
+    private static final Logger logger = LoggerFactory.getLogger(LTSaleController.class);
 
-    private final SaleView view;
+    //private final SaleView view;
+    private final LTSaleTranView view;
     private SaleState state = SaleState.empty();
+    private String _userId;
 
-    public SaleController(SaleView view) {
+    public LTSaleController(LTSaleTranView view) {
         this.view = view;
+        this.view.setController(this);
+    }
+
+    public void setUserId(String userId) {
+        this._userId = userId;
+    }
+
+    public String getUserId() {
+        return this._userId;
     }
 
     // ITEM ACTIONS
@@ -85,11 +97,11 @@ public class SaleController {
         updateView();
 
         if (customer != null) {
-            view.showMessage("Customer: " + customer.getCustomerName() +
-                    (customer.IsTaxExempt() ? " (Tax Exempt)" : ""));
+            //view.showMessage("Customer: " + customer.getCustomerName() + (customer.IsTaxExempt() ? " (Tax Exempt)" : ""));
             logger.info("Customer assigned: {} (ID: {})", customer.getCustomerName(), customer.getCustomerId());
         } else {
-            view.showMessage("Guest Checkout");
+            //view.showMessage("Guest Checkout");
+            int k =2+3;
         }
     }
 
@@ -132,14 +144,14 @@ public class SaleController {
         // CALL API
         try {
             //TCClient.checkout(ticket); // Your API call
-            view.showMessage(String.format(
+            logger.info(String.format(
                 "Sale Complete!\nTotal: $%.2f | Tips: $%.2f | Customer: %s",
                 finalTotal, state.getTotalTips(),
                 state.hasCustomer() ? state.getCustomer().getCustomerName() : "Guest"
             ));
             logger.info("Sale completed. RRN: {}", ticket.getTicketRRN());
         } catch (Exception e) {
-            view.showMessage("Checkout failed: " + e.getMessage());
+            logger.info("Checkout failed: " + e.getMessage());
             logger.error("Checkout error", e);
             return;
         }
@@ -150,9 +162,9 @@ public class SaleController {
 
     public void cancelSale() {
         state = SaleState.empty();
-        view.clearAll();
-        view.showMessage("Sale Cancelled");
-        view.setStatus("READY");
+        //view.clearAll();
+        //logger.info("Sale Cancelled");
+        //view.setStatus("READY");
         logger.info("Sale cancelled by user");
     }
 
@@ -229,8 +241,8 @@ public class SaleController {
 
     // PRIVATE: UI Update
     private void updateView() {
-        view.updateBilling(state);
-        view.setStatus(state.getStatus().name());
+        //view.updateBilling(state);
+        //view.setStatus(state.getStatus().name());
     }
 
     // PRIVATE: Reset

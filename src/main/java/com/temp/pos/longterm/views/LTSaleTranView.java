@@ -1,37 +1,29 @@
 package com.temp.pos.longterm.views;
 
-import com.temp.pos.longterm.models.LTCCustomer;
-import com.temp.pos.longterm.models.LTCItemButtonMenuResult;
-import com.temp.pos.longterm.models.LTCItemButtonMenuResultsModel;
-import com.temp.pos.longterm.models.LocationConfig;
-import com.temp.pos.longterm.models.LocationConfigModel;
-import com.temp.pos.longterm.models.LocationIndividual;
+import com.temp.pos.longterm.controllers.LTSaleController;
+import com.temp.pos.longterm.models.*;
 import com.temp.pos.services.CommonClient;
 import com.temp.pos.services.LTCClient;
 import com.temp.pos.utils.LongTerm.VendorDataCache;
 import com.temp.pos.views.CustomerSearchDialog;
-import com.temp.pos.longterm.controllers.LTSaleController;
-
-import javax.swing.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
+import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class LTSaleTranFrame extends JFrame {
+public class LTSaleTranView extends JPanel {
 
-    private static final Logger logger = LoggerFactory.getLogger(LTSaleTranFrame.class);
+    private static final Logger logger = LoggerFactory.getLogger(LTSaleTranView.class);
     private JPanel departmentPanel, categoryPanel, saleItemsPanel, billingItemPanel;
     private LTCItemButtonMenuResultsModel menuResults;
     private String UserId = "";
@@ -47,7 +39,7 @@ public class LTSaleTranFrame extends JFrame {
 
     // MODERN COLOR PALETTE (Tailwind/Material 3)
     private static final Color BG_PRIMARY = new Color(249, 250, 251);      // slate-50
-    private static final Color BG_SECONDARY = new Color(248, 250, 252);    // slate-100  
+    private static final Color BG_SECONDARY = new Color(248, 250, 252);    // slate-100
     private static final Color BG_CARD = new Color(255, 255, 255);         // white
     private static final Color BG_HEADER = new Color(15, 23, 42);          // slate-900
     private static final Color TEXT_PRIMARY = new Color(17, 24, 39);       // slate-800
@@ -57,11 +49,18 @@ public class LTSaleTranFrame extends JFrame {
     private static final Color ACCENT_DANGER = new Color(239, 68, 68);     // rose-500
     private static final Color BORDER_SUBTLE = new Color(226, 232, 240);   // slate-200
     private static final Color BORDER_HAIRLINE = new Color(241, 245, 249); // slate-100
-    
-    private final LTSaleController controller;
+
+    private final Font buttonFont = new Font("Arial", Font.BOLD, 22);
+    private final Font footerFont = new Font("Arial", Font.BOLD, 18);
+    private final Font billingFont = new Font("Arial", Font.BOLD, 18);
+    private final Font smallButtonFont = new Font("Arial", Font.BOLD, 16);
+
+    private LTSaleController controller;
     private final CommonClient commonClient;
     private final LTCClient ltcClient;
-    
+
+    private LTConcessionsFrame parentFrame;
+
     // FIXED HEIGHT BUTTON
     private static class FixedHeightButton extends JButton {
 
@@ -87,21 +86,21 @@ public class LTSaleTranFrame extends JFrame {
         }
     }
 
-    public LTSaleTranFrame(String userId, LTSaleController controller) {
-        
+    public void setController(LTSaleController controller) {
         this.controller = controller;
+    }
+
+    public LTSaleTranView() {
+        
+
         this.commonClient = new CommonClient();
         this.ltcClient = new LTCClient();
-        UserId = userId;
-        
-        setTitle("Concession POS - LT Sale Transaction");
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //parentFrame = parent;
+
+        //setTitle("Concession POS - LT Sale Transaction");
+        //setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new BorderLayout());
 
-        Font buttonFont = new Font("Arial", Font.BOLD, 22);
-        Font smallButtonFont = new Font("Arial", Font.BOLD, 16);
-        Font billingFont = new Font("Arial", Font.BOLD, 18);
-        Font footerFont = new Font("Arial", Font.BOLD, 18);
 
         JPanel topContainer = new JPanel();
         topContainer.setLayout(new BoxLayout(topContainer, BoxLayout.Y_AXIS));
@@ -210,12 +209,14 @@ public class LTSaleTranFrame extends JFrame {
         add(footerBar, BorderLayout.SOUTH);
 
         // Load data
-        loadData(userId, billingFont, smallButtonFont);
 
+        //setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    }
+
+    public void LoadData() {
+        loadData(controller.getUserId(), billingFont, smallButtonFont);
         setVisible(true);
         populatePanels(buttonFont);
-
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     private JPanel createModernHeaderPanel(Font buttonFont) {
@@ -525,22 +526,22 @@ public class LTSaleTranFrame extends JFrame {
             plus.removeActionListener(plus.getActionListeners().length > 0 ? plus.getActionListeners()[0] : null);
 
             minus.addActionListener(e -> {
-                LTSaleTranFrame frame = (LTSaleTranFrame) SwingUtilities.getWindowAncestor(this);
-                int newQty = frame.itemQuantities.getOrDefault(itemId, 0) - 1;
+                LTSaleTranView saleTranPanel = (LTSaleTranView) SwingUtilities.getUnwrappedParent(this);
+                int newQty = saleTranPanel.itemQuantities.getOrDefault(itemId, 0) - 1;
                 if (newQty <= 0) {
-                    frame.itemQuantities.remove(itemId);
+                    saleTranPanel.itemQuantities.remove(itemId);
                 } else {
-                    frame.itemQuantities.put(itemId, newQty);
+                    saleTranPanel.itemQuantities.put(itemId, newQty);
                 }
-                frame.refreshBillingTable();
+                saleTranPanel.refreshBillingTable();
             });
 
             plus.addActionListener(e -> {
-                LTSaleTranFrame frame = (LTSaleTranFrame) SwingUtilities.getWindowAncestor(this);
-                LTCItemButtonMenuResult item = frame.menuResults.getItemButtonMenuResults().stream()
+                LTSaleTranView saleTranPanel = (LTSaleTranView) SwingUtilities.getUnwrappedParent(this);
+                LTCItemButtonMenuResult item = saleTranPanel.menuResults.getItemButtonMenuResults().stream()
                         .filter(r -> r.getSalesItemID() == itemId).findFirst().orElse(null);
                 if (item != null) {
-                    frame.handleSaleItemClick(item);
+                    saleTranPanel.handleSaleItemClick(item);
                 }
             });
 
@@ -592,7 +593,7 @@ public class LTSaleTranFrame extends JFrame {
 
         customerBtn.addActionListener(e -> {
             LTCCustomer customer = CustomerSearchDialog.showDialog(
-                LTSaleTranFrame.this, commonClient, controller
+                parentFrame, commonClient, controller
             );
             if (customer != null) {
                 controller.assignCustomer(customer);
@@ -677,14 +678,14 @@ public class LTSaleTranFrame extends JFrame {
         btn.setMargin(new Insets(12, 24, 12, 24));
 
         // Hover effect
-        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+        btn.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            public void mouseEntered(MouseEvent evt) {
                 btn.setBackground(hoverColor);
             }
 
             @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
+            public void mouseExited(MouseEvent evt) {
                 btn.setBackground(baseColor);
             }
         });

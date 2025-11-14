@@ -1,7 +1,7 @@
 package com.temp.pos.views;
 
 import com.temp.pos.longterm.models.LTCCustomer;
-import com.temp.pos.longterm.controllers.SaleController;
+import com.temp.pos.longterm.controllers.LTSaleController;
 import com.temp.pos.services.CommonClient; // <-- NEW
 
 import javax.swing.*;
@@ -21,10 +21,10 @@ public class CustomerSearchDialog extends JDialog {
     private final JPanel resultsPanel;
     private final JButton searchBtn;
     private LTCCustomer selectedCustomer;
-    private SaleController _controller;
+    private LTSaleController _controller;
 
-    public CustomerSearchDialog(Frame owner, CommonClient commonClient, SaleController controller) {
-        super(owner, "Customer Lookup", true);
+    public CustomerSearchDialog(Component owner, CommonClient commonClient, LTSaleController controller) {
+        //super(owner, "Customer Lookup", true);
         this.commonClient = commonClient;
         setSize(520, 620);
         setLocationRelativeTo(owner);
@@ -220,7 +220,7 @@ public class CustomerSearchDialog extends JDialog {
     }
 
     // === STATIC LAUNCHER ===
-    public static LTCCustomer showDialog(Frame owner, CommonClient client, SaleController controller) {
+    public static LTCCustomer showDialog(Frame owner, CommonClient client, LTSaleController controller) {
         CustomerSearchDialog dialog = new CustomerSearchDialog(owner, client, controller);
         dialog.setVisible(true);
         return dialog.getSelectedCustomer();

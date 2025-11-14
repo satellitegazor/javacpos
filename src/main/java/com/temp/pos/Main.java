@@ -1,6 +1,7 @@
 package com.temp.pos;
 
 import com.formdev.flatlaf.*;
+import com.temp.pos.longterm.views.LTConcessionsFrame;
 import com.temp.pos.sbm.SBMLogonFrame;
 import com.temp.pos.longterm.views.LTLogonFrame;
 import com.temp.pos.views.shortterm.STLogonFrame;
@@ -13,6 +14,7 @@ public class Main {
     public static void main(String[] args) {
 	String module = args.length > 0 ? args[0] : "";
         //FlatLightLaf.setup();
+        //System.setProperty("javax.net.debug", "ssl,handshake");
         FlatIntelliJLaf.setup();
         SwingUtilities.invokeLater(new RunnableImpl(module));
     }
@@ -30,8 +32,10 @@ public class Main {
         public void run() {
             switch (module) {
                 case "-lt" -> {
-                    LTLogonFrame longTermFrame = new LTLogonFrame();
-                    longTermFrame.setVisible(true);
+                    //LTLogonFrame longTermFrame = new LTLogonFrame();
+                    //longTermFrame.setVisible(true);
+                    LTConcessionsFrame ltFrame = new LTConcessionsFrame();
+                    ltFrame.setVisible(true);
                 }
                 case "-st" -> {
                     STLogonFrame shortTermFrame = new STLogonFrame();

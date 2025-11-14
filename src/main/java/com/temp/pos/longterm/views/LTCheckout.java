@@ -1,22 +1,21 @@
 // src/main/java/com/temp/pos/views/longterm/LTCheckout.java
 package com.temp.pos.longterm.views;
 
-import com.temp.pos.longterm.controllers.SaleController;
+import com.temp.pos.longterm.controllers.LTSaleController;
 import com.temp.pos.longterm.models.TicketTender;
 import com.temp.pos.services.LTCClient;
 import com.temp.pos.utils.SVGIcon;
 
 import javax.swing.*;
 import java.awt.*;
-import java.math.BigDecimal;
 
 public class LTCheckout extends JFrame {
-    private final SaleController controller;
+    private final LTSaleController controller;
     private final LTCClient ltcClient;
 
     private JLabel totalLabel;
 
-    public LTCheckout(SaleController controller, LTCClient ltcClient) {
+    public LTCheckout(LTSaleController controller, LTCClient ltcClient) {
         this.controller = controller;
         this.ltcClient = ltcClient;
 
