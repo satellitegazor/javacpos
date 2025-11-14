@@ -1,16 +1,14 @@
 // src/main/java/com/temp/pos/views/Concessions.java
 package com.temp.pos.longterm.views;
 
-import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.temp.pos.longterm.controllers.LTSaleController;
-import com.temp.pos.longterm.models.SaleState;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class LTConcessionsFrame extends JFrame {
     private final CardLayout cardLayout;
-    private final JPanel cardPanel;
+    private final JPanel mainPanel;
 
     private LTLogonView logonPanel = new LTLogonView(this);
     private LTSaleTranView saleTranView = new LTSaleTranView();
@@ -22,36 +20,36 @@ public class LTConcessionsFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         saleController = new LTSaleController(saleTranView);
         cardLayout = new CardLayout();
-        cardPanel = new JPanel(cardLayout);
-        cardPanel.setBackground(Color.WHITE);
-        cardPanel.add(logonPanel, "LOGON");
-        cardPanel.add(saleTranView, "SALETRAN");
-        add(cardPanel, BorderLayout.CENTER);
-
-        showLogon();
+        mainPanel = new JPanel(cardLayout);
+        mainPanel.setBackground(Color.WHITE);
+        mainPanel.add(logonPanel, "LOGON");
+        mainPanel.add(saleTranView, "SALETRAN");
+        //add(container, BorderLayout.CENTER);
+        this.setContentPane(mainPanel);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLocationRelativeTo(null);
         setVisible(true);
     }
 
 
     protected void onLoginSuccess(String UserId) {
+        System.out.println("In onLoginSuccess");
+
         saleController.setUserId(UserId);
         showSale(UserId);
     }
 
     public void showLogon() {
-        if (logonPanel != null) {
-            cardPanel.remove(logonPanel);
-        }
+        System.out.println("In showLogon");
+        cardLayout.show(mainPanel, "LOGON");
+        mainPanel.revalidate();
+        mainPanel.repaint();
 
-        //cardPanel.add(logonPanel, "LOGON");
-        cardLayout.show(cardPanel, "LOGON");
         logonPanel.requestFocusInWindow();
     }
 
     public void showSale(String UserId) {
-        if (saleTranView != null) {
-            cardPanel.remove(saleTranView);
-        }
+        System.out.println("In showSale");
 
 //        SaleView view = new SaleView() {
 //            @Override
@@ -82,21 +80,19 @@ public class LTConcessionsFrame extends JFrame {
         if(saleTranView != null) {
             saleTranView.LoadData();
         }
-        cardLayout.show(cardPanel, "SALETRAN");
+        cardLayout.show(mainPanel, "SALETRAN");
+        mainPanel.revalidate();
+        mainPanel.repaint();
         //salePanel.requestFocusInWindow();
     }
 
 
     private void onLogout() {
-        if (saleTranView != null) {
-            //salePanel.cleanup();
-            saleTranView = null;
-        }
         showLogon();
     }
 
-    public static void main(String[] args) {
-        FlatIntelliJLaf.setup();
-        SwingUtilities.invokeLater(LTConcessionsFrame::new);
-    }
+//    public static void main(String[] args) {
+//        FlatIntelliJLaf.setup();
+//        SwingUtilities.invokeLater(LTConcessionsFrame::new);
+//    }
 }

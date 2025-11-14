@@ -36,6 +36,7 @@ public class Main {
                     //longTermFrame.setVisible(true);
                     LTConcessionsFrame ltFrame = new LTConcessionsFrame();
                     ltFrame.setVisible(true);
+                    ltFrame.showLogon();
                 }
                 case "-st" -> {
                     STLogonFrame shortTermFrame = new STLogonFrame();

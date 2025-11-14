@@ -28,7 +28,7 @@ public class LTCheckout extends JFrame {
         createMainPanel();
         createFooter();
 
-        setVisible(true);
+
     }
 
     private void createNavbar() {

@@ -212,7 +212,6 @@ public class LTSaleTranFrame extends JFrame {
         // Load data
         loadData(userId, billingFont, smallButtonFont);
 
-        setVisible(true);
         populatePanels(buttonFont);
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
