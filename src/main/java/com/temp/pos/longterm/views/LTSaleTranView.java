@@ -90,17 +90,12 @@ public class LTSaleTranView extends JPanel {
         this.controller = controller;
     }
 
-    public LTSaleTranView() {
-        
+    public LTSaleTranView(JFrame parent) {
 
         this.commonClient = new CommonClient();
         this.ltcClient = new LTCClient();
-        //parentFrame = parent;
 
-        //setTitle("Concession POS - LT Sale Transaction");
-        //setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new BorderLayout());
-
 
         JPanel topContainer = new JPanel();
         topContainer.setLayout(new BoxLayout(topContainer, BoxLayout.Y_AXIS));

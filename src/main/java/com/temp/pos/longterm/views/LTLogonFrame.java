@@ -363,8 +363,9 @@ public class LTLogonFrame extends JFrame implements BaseLogonFrame {
 //                //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 //            }
 //        };
-        LTSaleTranView view = new LTSaleTranView();
-        LTSaleController controller = new LTSaleController(view);
+        LTSaleTranView view = new LTSaleTranView(this);
+        LTSaleController controller = new LTSaleController();
+        controller.setView(view);
         CommonClient comClient = new CommonClient();
         return new LTSaleTranFrame(userId, controller);
     }

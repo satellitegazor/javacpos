@@ -33,11 +33,14 @@ public class LTSaleController {
     private static final Logger logger = LoggerFactory.getLogger(LTSaleController.class);
 
     //private final SaleView view;
-    private final LTSaleTranView view;
+    private LTSaleTranView view;
     private SaleState state = SaleState.empty();
     private String _userId;
 
-    public LTSaleController(LTSaleTranView view) {
+    public LTSaleController() {
+    }
+
+    public void setView(LTSaleTranView view) {
         this.view = view;
         this.view.setController(this);
     }
