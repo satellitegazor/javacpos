@@ -14,6 +14,7 @@ public class LTConcessionsFrame extends JFrame {
 
     private LTLogonView logonPanel;
     private LTSaleTranView salePanel;
+    private LTCheckoutView checkoutPanel;
     private LTSaleController saleController;
 
     public LTConcessionsFrame() {
@@ -25,25 +26,22 @@ public class LTConcessionsFrame extends JFrame {
         contentPane.setBackground(Color.white);
         add(contentPane);
 
-
-
         showLogon();
         setVisible(true);
     }
-
 
     protected void onLoginSuccess(String UserId) {
         showSale(UserId);
     }
 
     public void showLogon() {
+
         if (salePanel != null) {
             contentPane.remove(salePanel);
             salePanel = null;
         }
 
         logonPanel = new LTLogonView(this);
-
         contentPane.add(logonPanel);
         revalidate();
         repaint();
@@ -67,6 +65,23 @@ public class LTConcessionsFrame extends JFrame {
         salePanel.requestFocusInWindow();
     }
 
+    public void showCheckoutView() {
+
+        if(logonPanel != null) {
+            contentPane.remove(logonPanel);
+            logonPanel = null;
+        }
+        if (salePanel != null) {
+            contentPane.remove(salePanel);
+            salePanel = null;
+        }
+        checkoutPanel = new LTCheckoutView(this);
+        contentPane.add(checkoutPanel);
+
+        revalidate();
+        repaint();
+        salePanel.requestFocusInWindow();
+    }
 
     private void onLogout() {
         if (salePanel != null) {
@@ -76,8 +91,4 @@ public class LTConcessionsFrame extends JFrame {
         showLogon();
     }
 
-    public static void main(String[] args) {
-        FlatIntelliJLaf.setup();
-        SwingUtilities.invokeLater(LTConcessionsFrame::new);
-    }
 }

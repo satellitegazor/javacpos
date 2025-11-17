@@ -38,7 +38,6 @@ public class LTSaleController {
 
     public LTSaleController(String userId) {
         this._userId = userId;
-
     }
 
     public void setSaleTranView(LTSaleTranView saleView) {
@@ -75,7 +74,12 @@ public class LTSaleController {
     public void addTip(int individualUID, String associateName, double tipAmount) {
         if (tipAmount <= 0) return;
 
-        state = state.addTip(individualUID, associateName, tipAmount);
+        AssociateSaleTips tip = new AssociateSaleTips();
+        tip.setIndividualUID(individualUID);
+        tip.setAssociateName(associateName);
+        tip.setTipAmount(tipAmount);
+
+        state = state.addTip(tip);
         syncTipsToTicket();
         updateView();
         logger.info("Tip added: ${} for {}", tipAmount, associateName);

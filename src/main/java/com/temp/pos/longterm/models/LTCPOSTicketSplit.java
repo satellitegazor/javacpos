@@ -148,4 +148,60 @@ public class LTCPOSTicketSplit {
 
     public ExchCardTndr getVmTndr() { return vmTndr; }
     public void setVmTndr(ExchCardTndr vmTndr) { this.vmTndr = vmTndr; }
+
+    public List<SalesTransactionCheckoutItem> getItems() {
+        return this.tktList;
+    }
+    public void setItems(List<SalesTransactionCheckoutItem> items) {
+        this.tktList = items;
+    }
+    public List<TicketTender> getTenders() {
+        return this.ticketTenderList;
+    }
+    public void setTenders(List<TicketTender> tenders) {
+        this.ticketTenderList = tenders;
+    }
+
+    public double getTotal() {
+        return totalSale;
+    }
+    public void setTotal(double Total) {
+        totalSale = Total;
+    }
+
+
+
+    public LTCPOSTicketSplit copy() {
+        LTCPOSTicketSplit copy = new LTCPOSTicketSplit();
+        copy.setItems(new ArrayList<>(this.getItems()));
+        copy.setAssociateTips(new ArrayList<>(this.getAssociateTips()));
+        copy.setTenders(new ArrayList<>(this.getTenders()));
+        copy.setCustomer(this.getCustomer());
+        copy.setCustomerId(this.getCustomerId());
+        copy.setTaxExempted(this.isTaxExempted());
+        //copy.setStatus(this.getStatus());
+        // copy other fields as needed
+        return copy;
+    }
+
+    public void recalculateTotals() {
+        double itemsTotal = getItems().stream()
+                .mapToDouble(SalesTransactionCheckoutItem::getLineTotal)
+                .sum();
+
+        double tipsTotal = getAssociateTips().stream()
+                .mapToDouble(AssociateSaleTips::getTipAmount)
+                .sum();
+
+        double paid = getTenders().stream()
+                .mapToDouble(TicketTender::getAmount)
+                .sum();
+
+        double tax = isTaxExempted() ? 0 : itemsTotal * 0.06; // example tax rate
+        double grandTotal = itemsTotal + tax + tipsTotal;
+
+        setTotal(grandTotal);
+        //setTotalTips(tipsTotal);
+        setBalanceDue(grandTotal - paid);
+    }
 }
