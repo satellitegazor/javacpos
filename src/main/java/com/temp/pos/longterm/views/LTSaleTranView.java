@@ -94,7 +94,7 @@ public class LTSaleTranView extends JPanel {
 
         this.commonClient = new CommonClient();
         this.ltcClient = new LTCClient();
-        //parentFrame = parent;
+        parentFrame = parent;
 
         //setTitle("Concession POS - LT Sale Transaction");
         //setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -281,7 +281,7 @@ public class LTSaleTranView extends JPanel {
             facilityLabel.setText("Facility: " + (cfg.getFacilityName() != null ? cfg.getFacilityName() : "Kathlyrn Barber Shop"));
             currencyLabel.setText("Currency: " + cfg.getDefaultCurrency());
 
-            updateBillingItemPanel(billingFont, smallButtonFont);
+            updateBillingItemPanel();
         } catch (Exception e) {
             logger.error("Error loading data: {}", e.getMessage(), e);
             associateLabel.setText("Associate: Error");
@@ -412,12 +412,12 @@ public class LTSaleTranView extends JPanel {
     private void handleSaleItemClick(LTCItemButtonMenuResult item) {
         int itemId = item.getSalesItemID();
         itemQuantities.put(itemId, itemQuantities.getOrDefault(itemId, 0) + 1);
-        updateBillingItemPanel(new Font("Arial", Font.BOLD, 18), new Font("Arial", Font.BOLD, 16));
+        updateBillingItemPanel();
         controller.addItem(item);
         logger.info("Added: {} (ID: {}, Qty: {})", item.getSalesItemDescription(), itemId, itemQuantities.get(itemId));
     }
 
-    private void updateBillingItemPanel(Font billingFont, Font smallButtonFont) {
+    private void updateBillingItemPanel() {
         billingModel.setRowCount(0); // Clear
 
         double grandTotal = 0;
@@ -457,7 +457,7 @@ public class LTSaleTranView extends JPanel {
     }
 
     public void refreshBillingTable() {
-        updateBillingItemPanel(null, null);
+        updateBillingItemPanel();
     }
 
     /* ------------------- DESCRIPTION CELL ------------------- */
@@ -607,23 +607,17 @@ public class LTSaleTranView extends JPanel {
             }
         });
 
-//        checkoutBtn.addActionListener(e -> {
-//            double total = itemQuantities.entrySet().stream()
-//                    .filter(entry -> entry.getValue() > 0)
-//                    .mapToDouble(entry -> {
-//                        LTCItemButtonMenuResult itm = menuResults.getItemButtonMenuResults().stream()
-//                                .filter(r -> r.getSalesItemID() == entry.getKey())
-//                                .findFirst().orElse(null);
-//                        return itm != null ? entry.getValue() * itm.getPrice() : 0;
-//                    }).sum();
-//            logger.info("Checkout clicked – Total: €{:.2f}", total);`
-//        });
         checkoutBtn.addActionListener(e -> {
             if (controller.getCurrentState().getItems().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "No items to checkout.");
                 return;
             }
+            System.out.println("Checkout buttton clicked, items not empty");
             new LTCheckoutView(controller, ltcClient); // Opens checkout
+            SwingUtilities.invokeLater(() -> {
+                parentFrame.showCheckoutView();
+            });
+
         });
 
         ticketLookupBtn.addActionListener(e -> logger.info("Ticket Lookup clicked"));
@@ -634,7 +628,7 @@ public class LTSaleTranView extends JPanel {
                     "Confirm Cancel", JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.YES_OPTION) {
                 itemQuantities.clear();
-                updateBillingItemPanel(new Font("Arial", Font.BOLD, 18), new Font("Arial", Font.BOLD, 16));
+                updateBillingItemPanel();
             }
         });
 

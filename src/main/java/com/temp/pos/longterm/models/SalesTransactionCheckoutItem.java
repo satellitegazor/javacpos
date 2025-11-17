@@ -14,6 +14,7 @@ public class SalesTransactionCheckoutItem {
     private String barcode;
     private boolean taxExempt;
     private int displayOrder;
+    private int individualId;
 
     // Constructor
     public SalesTransactionCheckoutItem() {}
@@ -25,6 +26,13 @@ public class SalesTransactionCheckoutItem {
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.lineTotal = quantity * unitPrice;
+    }
+
+    public void setServicedBy(int individualId) {
+        this.individualId = individualId;
+    }
+    public int getServicedBy() {
+        return this.individualId;
     }
 
     // Getters & Setters

@@ -1,23 +1,14 @@
 package com.temp.pos.utils.LongTerm;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.temp.pos.longterm.models.*;
 import com.temp.pos.models.common.DailyExchRateMdl;
-import com.temp.pos.longterm.models.LTCAbbrLocationModel;
-import com.temp.pos.longterm.models.LTCItemButtonMenuResultsModel;
-import com.temp.pos.longterm.models.LTCLocationAssociatesResultsModel;
-import com.temp.pos.longterm.models.LTCSingleTransactionID;
-import com.temp.pos.longterm.models.LTCSingleTransactionResultsModel;
-import com.temp.pos.longterm.models.LTCTransactionDetailsModel;
-import com.temp.pos.longterm.models.LocationConfigModel;
 import com.temp.pos.models.common.SaveFDMSTenderResultModel;
-import com.temp.pos.longterm.models.SaveTenderResultModel;
-import com.temp.pos.longterm.models.SaveTicketResultsModel;
-import com.temp.pos.longterm.models.TicketLookupResult;
-import com.temp.pos.longterm.models.VendorContractSummaryResultsModel;
-import com.temp.pos.longterm.models.VendorLoginResultsModel;
+import com.temp.pos.models.longterm.LocationConfig;
 
 public class VendorDataCache {
 
@@ -42,6 +33,20 @@ public class VendorDataCache {
     private final Map<String, LTCTransactionDetailsModel> transactionDetailsCache = new ConcurrentHashMap<>();
     private final Map<String, LTCSingleTransactionResultsModel> singleTransactionCache = new ConcurrentHashMap<>();
     private final Map<String, LTCSingleTransactionID> tranIdCache = new ConcurrentHashMap<>();
+    private final Map<Integer, LTCLocationAssociate> locationAssoc = new ConcurrentHashMap<Integer, LTCLocationAssociate>();
+    private LocationConfig locationConfig;
+    private final Map<Integer, String> LTBusinessModelMap = new HashMap<Integer, String>() {{
+        put(1,	"BUSFNC_ALT");
+        put(2,	"BUSFNC_LNDRYCLN");
+        put(3,	"BUSFNC_LNDRYCLN_WALT");
+        put(4,	"BUSFNC_CASH_CARRY");
+        put(5,	"BUSFNC_REPIR_CNTR");
+        put(6,	"BUSFNC_PHOTO_STDIO");
+        put(7,	"BUSFNC_AUTO_ENHNC");
+        put(8,	"BUSFNC_SPCLT_SHOP");
+        put(9,	"BUSFNC_PSVCS_W_TIPS");
+        put(10,	"BUSFNC_NONAME_BRAND_FS");
+    }};
     // Private constructor to prevent instantiation
     private VendorDataCache() {
     }
@@ -95,20 +100,25 @@ public class VendorDataCache {
         if (result != null && result.getResults() != null && result.getResults().getUserId() != null) {
             locationConfigCache.put(result.getResults().getUserId(), result);
         }
+        locationConfig = result.getConfigs().get(0);
     }
 
     public LocationConfigModel getLocationConfig(String userId) {
         return locationConfigCache.get(userId);
     }
 
-    public void storeLocationAssociates(LTCLocationAssociatesResultsModel result) {
-        if (result != null && result.getResults() != null && result.getResults().getUserId() != null) {
-            locationAssociatesCache.put(result.getResults().getUserId(), result);
-        }
+    public LocationConfig getLocationConfig() {
+        return locationConfig;
     }
 
-    public LTCLocationAssociatesResultsModel getLocationAssociates(String userId) {
-        return locationAssociatesCache.get(userId);
+    public void storeLocationAssociates(LTCLocationAssociatesResultsModel result) {
+        result.getAssociates().forEach(k -> {
+            locationAssoc.put(k.getAssociateId(), k);
+        });
+    }
+
+    public LTCLocationAssociate getLocationAssociates(int userId) {
+        return locationAssoc.get(userId);
     }
 
     public void storeSaveTicketResults(SaveTicketResultsModel result) {

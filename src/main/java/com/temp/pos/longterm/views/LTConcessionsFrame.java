@@ -80,7 +80,7 @@ public class LTConcessionsFrame extends JFrame {
 
         revalidate();
         repaint();
-        salePanel.requestFocusInWindow();
+        checkoutPanel.requestFocusInWindow();
     }
 
     private void onLogout() {

@@ -2,17 +2,26 @@
 package com.temp.pos.longterm.views;
 
 import com.temp.pos.longterm.controllers.LTSaleController;
+import com.temp.pos.longterm.models.SaleState;
+import com.temp.pos.longterm.models.SalesTransactionCheckoutItem;
 import com.temp.pos.longterm.models.TicketTender;
+import com.temp.pos.longterm.models.Vendor;
 import com.temp.pos.services.LTCClient;
+import com.temp.pos.utils.LongTerm.VendorDataCache;
 import com.temp.pos.utils.SVGIcon;
 
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class LTCheckoutView extends JPanel {
 
     private LTSaleController controller;
     private LTCClient ltcClient;
+    private JTable itemsTable;
+    private DefaultTableModel tableModel;
     private JFrame _parent;
     private JLabel totalLabel;
 
@@ -27,8 +36,77 @@ public class LTCheckoutView extends JPanel {
         setLayout(new BorderLayout());
 
         createNavbar();
+        createItemsTablePanel();
         createMainPanel();
         createFooter();
+    }
+
+    private void createItemsTablePanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+
+        // Header + Total
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBackground(Color.WHITE);
+
+        JLabel title = new JLabel("Checkout Items");
+        title.setFont(new Font("Arial", Font.BOLD, 22));
+        header.add(title, BorderLayout.WEST);
+
+        JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        totalPanel.setBackground(Color.WHITE);
+        JLabel totalTxt = new JLabel("Total: ");
+        totalTxt.setFont(new Font("Arial", Font.BOLD, 28));
+        totalLabel = new JLabel("€0.00");
+        totalLabel.setFont(new Font("Arial", Font.BOLD, 36));
+        totalLabel.setForeground(new Color(25, 135, 84));
+        totalPanel.add(totalTxt);
+        totalPanel.add(totalLabel);
+        header.add(totalPanel, BorderLayout.EAST);
+
+        panel.add(header, BorderLayout.NORTH);
+
+        // Table
+        String[] columns = {
+                "Item Description", "Serviced By", "Qty", "Unit Price", "Discount", "Exch. Coupon", "Sales Tax", "Line Total"
+        };
+        tableModel = new DefaultTableModel(columns, 0) {
+            @Override public boolean isCellEditable(int row, int column) { return false; }
+        };
+
+        itemsTable = new JTable(tableModel);
+        itemsTable.setFont(new Font("Arial", Font.PLAIN, 16));
+        itemsTable.setRowHeight(40);
+        itemsTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 16));
+        itemsTable.getTableHeader().setBackground(new Color(230, 230, 230));
+
+        // Column widths & alignment
+        itemsTable.getColumnModel().getColumn(0).setPreferredWidth(300);
+        itemsTable.getColumnModel().getColumn(1).setPreferredWidth(120);
+        itemsTable.getColumnModel().getColumn(2).setPreferredWidth(60);
+        itemsTable.getColumnModel().getColumn(3).setPreferredWidth(100);
+        itemsTable.getColumnModel().getColumn(4).setPreferredWidth(100);
+        itemsTable.getColumnModel().getColumn(5).setPreferredWidth(100);
+        itemsTable.getColumnModel().getColumn(6).setPreferredWidth(100);
+        itemsTable.getColumnModel().getColumn(7).setPreferredWidth(120);
+
+        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+        rightRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        itemsTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+        itemsTable.getColumnModel().getColumn(3).setCellRenderer(rightRenderer);
+        itemsTable.getColumnModel().getColumn(4).setCellRenderer(rightRenderer);
+        itemsTable.getColumnModel().getColumn(5).setCellRenderer(rightRenderer);
+        itemsTable.getColumnModel().getColumn(6).setCellRenderer(rightRenderer);
+        itemsTable.getColumnModel().getColumn(7).setCellRenderer(rightRenderer);
+
+        JScrollPane scroll = new JScrollPane(itemsTable);
+        scroll.setPreferredSize(new Dimension(800, 400));
+        panel.add(scroll, BorderLayout.CENTER);
+
+        add(panel, BorderLayout.CENTER);
     }
 
     private void createNavbar() {
@@ -159,5 +237,33 @@ public class LTCheckoutView extends JPanel {
 
         footer.add(cancel);
         add(footer, BorderLayout.SOUTH);
+    }
+
+    private void updateItemsAndTotal() {
+        tableModel.setRowCount(0);
+        SaleState state = controller.getCurrentState();
+        List<SalesTransactionCheckoutItem> items = state.getTicket().getItems();
+
+        double grandTotal = 0;
+        for (SalesTransactionCheckoutItem item : items) {
+            double lineTotal = item.getLineTotal();
+            grandTotal += lineTotal;
+
+            VendorDataCache dataCache = VendorDataCache.getInstance();
+            String servicedBy = dataCache.getLocationAssociates(item.getServicedBy()).getAssociateName();
+
+            tableModel.addRow(new Object[]{
+                    item.getSalesItemDescription(),
+                    servicedBy,
+                    String.format("%.0f", item.getQuantity()),
+                    String.format("€%.2f", item.getUnitPrice()),
+                    item.getDiscountAmount() > 0 ? String.format("€%.2f", item.getDiscountAmount()) : "",
+                    "", // Exch. Coupon
+                    String.format("€%.2f", item.getTaxAmount()),
+                    String.format("€%.2f", lineTotal)
+            });
+        }
+
+        totalLabel.setText("€" + String.format("%.2f", grandTotal));
     }
 }
