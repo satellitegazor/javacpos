@@ -49,11 +49,10 @@ public class LTSaleTranView extends JPanel {
     private static final Color ACCENT_DANGER = new Color(239, 68, 68);     // rose-500
     private static final Color BORDER_SUBTLE = new Color(226, 232, 240);   // slate-200
     private static final Color BORDER_HAIRLINE = new Color(241, 245, 249); // slate-100
-
-    private final Font buttonFont = new Font("Arial", Font.BOLD, 22);
-    private final Font footerFont = new Font("Arial", Font.BOLD, 18);
-    private final Font billingFont = new Font("Arial", Font.BOLD, 18);
-    private final Font smallButtonFont = new Font("Arial", Font.BOLD, 16);
+    private Font billingFont = null;
+    private Font footerFont = null;
+    private Font buttonFont = null;
+    private Font smallButtonFont = null;
 
     private LTSaleController controller;
     private final CommonClient commonClient;
@@ -90,12 +89,21 @@ public class LTSaleTranView extends JPanel {
         this.controller = controller;
     }
 
-    public LTSaleTranView(JFrame parent) {
+    public LTSaleTranView(LTConcessionsFrame parent) {
+        
 
         this.commonClient = new CommonClient();
         this.ltcClient = new LTCClient();
+        //parentFrame = parent;
 
+        //setTitle("Concession POS - LT Sale Transaction");
+        //setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new BorderLayout());
+
+        buttonFont = new Font("Arial", Font.BOLD, 22);
+        smallButtonFont = new Font("Arial", Font.BOLD, 16);
+        billingFont = new Font("Arial", Font.BOLD, 18);
+        footerFont = new Font("Arial", Font.BOLD, 18);
 
         JPanel topContainer = new JPanel();
         topContainer.setLayout(new BoxLayout(topContainer, BoxLayout.Y_AXIS));
@@ -205,10 +213,12 @@ public class LTSaleTranView extends JPanel {
 
         // Load data
 
+
         //setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     public void LoadData() {
+
         loadData(controller.getUserId(), billingFont, smallButtonFont);
         setVisible(true);
         populatePanels(buttonFont);
@@ -613,7 +623,7 @@ public class LTSaleTranView extends JPanel {
                 JOptionPane.showMessageDialog(this, "No items to checkout.");
                 return;
             }
-            new LTCheckout(controller, ltcClient); // Opens checkout
+            new LTCheckoutView(controller, ltcClient); // Opens checkout
         });
 
         ticketLookupBtn.addActionListener(e -> logger.info("Ticket Lookup clicked"));

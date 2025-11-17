@@ -616,7 +616,7 @@ public class LTSaleTranFrame extends JFrame {
                 JOptionPane.showMessageDialog(this, "No items to checkout.");
                 return;
             }
-            new LTCheckout(controller, ltcClient); // Opens checkout
+            new LTCheckoutView(controller, ltcClient); // Opens checkout
         });
 
         ticketLookupBtn.addActionListener(e -> logger.info("Ticket Lookup clicked"));

@@ -9,26 +9,26 @@ import com.temp.pos.utils.SVGIcon;
 import javax.swing.*;
 import java.awt.*;
 
-public class LTCheckout extends JFrame {
-    private final LTSaleController controller;
-    private final LTCClient ltcClient;
+public class LTCheckoutView extends JPanel {
 
+    private LTSaleController controller;
+    private LTCClient ltcClient;
+    private JFrame _parent;
     private JLabel totalLabel;
 
-    public LTCheckout(LTSaleController controller, LTCClient ltcClient) {
+    public LTCheckoutView(JFrame parent) {
+        _parent = parent;
+    }
+
+    public LTCheckoutView(LTSaleController controller, LTCClient ltcClient) {
         this.controller = controller;
         this.ltcClient = ltcClient;
 
-        setTitle("Concession POS - Checkout");
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
         createNavbar();
         createMainPanel();
         createFooter();
-
-
     }
 
     private void createNavbar() {
@@ -155,7 +155,7 @@ public class LTCheckout extends JFrame {
         cancel.setBackground(new Color(108, 117, 125));
         cancel.setForeground(Color.WHITE);
         cancel.setPreferredSize(new Dimension(140, 44));
-        cancel.addActionListener(e -> dispose());
+        //cancel.addActionListener(e -> dispose());
 
         footer.add(cancel);
         add(footer, BorderLayout.SOUTH);

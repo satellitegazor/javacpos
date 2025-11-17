@@ -1,9 +1,8 @@
 package com.temp.pos;
 
 import com.formdev.flatlaf.*;
-import com.temp.pos.longterm.views.LTConcessionsFrame;
+import com.temp.pos.longterm.views.*;
 import com.temp.pos.sbm.SBMLogonFrame;
-import com.temp.pos.longterm.views.LTLogonFrame;
 import com.temp.pos.views.shortterm.STLogonFrame;
 
 import javax.swing.JOptionPane;

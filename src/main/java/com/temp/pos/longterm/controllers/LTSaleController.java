@@ -22,7 +22,6 @@ package com.temp.pos.longterm.controllers;
 
 import com.temp.pos.longterm.models.*;
 import com.temp.pos.longterm.views.LTSaleTranView;
-import com.temp.pos.longterm.views.SaleView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 //import java.math2.double;
@@ -33,20 +32,17 @@ public class LTSaleController {
     private static final Logger logger = LoggerFactory.getLogger(LTSaleController.class);
 
     //private final SaleView view;
-    private LTSaleTranView view;
+    private LTSaleTranView saleTranView;
     private SaleState state = SaleState.empty();
     private String _userId;
 
-    public LTSaleController() {
-    }
-
-    public void setView(LTSaleTranView view) {
-        this.view = view;
-        this.view.setController(this);
-    }
-
-    public void setUserId(String userId) {
+    public LTSaleController(String userId) {
         this._userId = userId;
+
+    }
+
+    public void setSaleTranView(LTSaleTranView saleView) {
+        this.saleTranView = saleView;
     }
 
     public String getUserId() {
