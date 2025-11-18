@@ -473,6 +473,7 @@ public class LTLogonView extends JPanel {
             saveCredentials(vendorNumber, exchangeNum, locationName);
 
             LocationConfigModel config = VendorDataCache.getInstance().getLocationConfig(userId);
+            VendorDataCache.getInstance().storeLocationConfig(config);
             VendorDataCache.getInstance().storeDailyExchRate(new DailyExchRateMdl());
 
             SwingUtilities.invokeLater(() -> {

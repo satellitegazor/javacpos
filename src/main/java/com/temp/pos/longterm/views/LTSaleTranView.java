@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 public class LTSaleTranView extends JPanel {
 
     private static final Logger logger = LoggerFactory.getLogger(LTSaleTranView.class);
@@ -36,6 +37,7 @@ public class LTSaleTranView extends JPanel {
     private JTable billingTable;
     private DefaultTableModel billingModel;
     private Map<Integer, Integer> itemQuantities = new HashMap<>();
+    private Map<Integer, Integer> itemServicedBy = new HashMap<>();
 
     // MODERN COLOR PALETTE (Tailwind/Material 3)
     private static final Color BG_PRIMARY = new Color(249, 250, 251);      // slate-50
@@ -154,9 +156,18 @@ public class LTSaleTranView extends JPanel {
         gbc.weighty = 1.0;
         bottomContainer.add(saleItemsContainer, gbc);
 
+        LocationConfig cfg =VendorDataCache.getInstance().getLocationConfig();
+        String[] billingItemColumns;
+
+        if(cfg.getBusFuncCode() == VendorDataCache.LTBusinessModelMap.get(5)) {
+            billingItemColumns = new String[]{"ItemId", "Item Description", "Qty", "ServicedBy", "Unit Price", "Total"};
+        } else {
+            billingItemColumns = new String[]{"ItemId", "Item Description", "Qty", "Unit Price", "Total"};
+
+        }
+
         // === BILLING TABLE (Perfect Grid) ===
-        billingModel = new DefaultTableModel(new Object[][]{},
-                new String[]{"Item Description", "Qty", "Unit Price", "Total"}) {
+        billingModel = new DefaultTableModel(new Object[][]{}, billingItemColumns) {
             @Override
             public boolean isCellEditable(int row, int col) {
                 return false;
@@ -179,11 +190,16 @@ public class LTSaleTranView extends JPanel {
         tcm.getColumn(2).setPreferredWidth(25);
         tcm.getColumn(3).setPreferredWidth(30);
 
-        // Custom renderers
+        System.out.println("Business Model: " + VendorDataCache.getInstance().getLocationConfig().getBusFuncCode());
+        
         tcm.getColumn(0).setCellRenderer(new DescriptionRenderer());
-        tcm.getColumn(1).setCellRenderer(new QtyButtonRenderer());
-        tcm.getColumn(2).setCellRenderer(new RightAlignRenderer());
+        if(VendorDataCache.getInstance().getLocationConfig().getBusFuncCode() == VendorDataCache.LTBusinessModelMap.get(9)) {
+            tcm.getColumn(2).setCellRenderer(new ServicedByRenderer());
+        } else {
+            tcm.getColumn(2).setCellRenderer(new QtyButtonRenderer());
+        }       
         tcm.getColumn(3).setCellRenderer(new RightAlignRenderer());
+        tcm.getColumn(4).setCellRenderer(new RightAlignRenderer());
 
         // Scroll pane
         JScrollPane billingScrollPane = new JScrollPane(billingTable);
@@ -438,7 +454,7 @@ public class LTSaleTranView extends JPanel {
             double rowTotal = qty * unitPrice;
             grandTotal += rowTotal;
 
-            billingModel.addRow(new Object[]{
+            billingModel.addRow(new Object[] {
                 item.getSalesItemDescription(),
                 new Object[]{itemId, qty}, // For QtyButtonRenderer
                 String.format("€%.2f", unitPrice),
@@ -474,6 +490,57 @@ public class LTSaleTranView extends JPanel {
             setFont(new Font("Arial", Font.PLAIN, 14));
             setForeground(TEXT_PRIMARY);
             setBorder(BorderFactory.createEmptyBorder(0, 16, 0, 16));
+            return this;
+        }
+    }
+
+    
+    /* ------------------- QTY BUTTON CELL ------------------- */
+    static class ServicedByRenderer extends JPanel implements TableCellRenderer {
+
+        private final JComboBox<String> servicedByCombo = new JComboBox<>();
+
+        public ServicedByRenderer() {
+            setLayout(new FlowLayout(FlowLayout.CENTER, 3, 0));
+            setOpaque(true);
+
+            VendorDataCache.LTBusinessModelMap.forEach((key, value) -> {
+                servicedByCombo.addItem(value);
+            });
+
+            servicedByCombo.setPreferredSize(new Dimension(28, 24));
+            servicedByCombo.setFont(new Font("Arial", Font.BOLD, 14));
+            servicedByCombo.setEditable(false);
+            servicedByCombo.setBackground(BG_CARD);
+            servicedByCombo.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(BORDER_HAIRLINE, 1),
+                    BorderFactory.createEmptyBorder(1, 3, 1, 3)));
+
+            add(servicedByCombo);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int col) {
+            // value = [itemId, qty]
+            Object[] data = (Object[]) value;
+            int itemId = (Integer) data[0];
+            int srvdByIndex = (Integer) data[1];
+
+            servicedByCombo.setSelectedIndex(0); // Default selection
+
+            setBackground(row % 2 == 0 ? BG_CARD : BG_SECONDARY);
+
+            // Attach actions
+            //minus.removeActionListener(minus.getActionListeners().length > 0 ? minus.getActionListeners()[0] : null);
+            //plus.removeActionListener(plus.getActionListeners().length > 0 ? plus.getActionListeners()[0] : null);
+
+            servicedByCombo.addActionListener(e -> {
+                LTSaleTranView saleTranPanel = (LTSaleTranView) SwingUtilities.getUnwrappedParent(this);
+                int newSrvdByIndx = saleTranPanel.itemServicedBy.getOrDefault(itemId, 1);
+                saleTranPanel.itemServicedBy.put(itemId, newSrvdByIndx);
+                saleTranPanel.refreshBillingTable();
+            });
             return this;
         }
     }

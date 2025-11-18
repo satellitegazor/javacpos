@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.temp.pos.longterm.models.*;
 import com.temp.pos.models.common.DailyExchRateMdl;
 import com.temp.pos.models.common.SaveFDMSTenderResultModel;
-import com.temp.pos.models.longterm.LocationConfig;
 
 public class VendorDataCache {
 
@@ -35,7 +34,7 @@ public class VendorDataCache {
     private final Map<String, LTCSingleTransactionID> tranIdCache = new ConcurrentHashMap<>();
     private final Map<Integer, LTCLocationAssociate> locationAssoc = new ConcurrentHashMap<Integer, LTCLocationAssociate>();
     private LocationConfig locationConfig;
-    private final Map<Integer, String> LTBusinessModelMap = new HashMap<Integer, String>() {{
+    public static final Map<Integer, String> LTBusinessModelMap = new HashMap<Integer, String>() {{
         put(1,	"BUSFNC_ALT");
         put(2,	"BUSFNC_LNDRYCLN");
         put(3,	"BUSFNC_LNDRYCLN_WALT");
@@ -45,7 +44,7 @@ public class VendorDataCache {
         put(7,	"BUSFNC_AUTO_ENHNC");
         put(8,	"BUSFNC_SPCLT_SHOP");
         put(9,	"BUSFNC_PSVCS_W_TIPS");
-        put(10,	"BUSFNC_NONAME_BRAND_FS");
+        put(10, "BUSFNC_NONAME_BRAND_FS");
     }};
     // Private constructor to prevent instantiation
     private VendorDataCache() {

@@ -35,7 +35,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class LTCClient {
     
@@ -124,6 +124,9 @@ public class LTCClient {
 
             cache.storeLocationConfig(response.getBody());
             logger.info("Stored GetLocationConfigs response in cache");
+
+            ObjectMapper mapper = new ObjectMapper();
+            logger.info(mapper.writeValueAsString(response.getBody()));
 
             return response.getBody();
         } catch (Exception e) {
